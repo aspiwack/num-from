@@ -25,5 +25,9 @@ groupSearch fuel supply eval =
   case searchLoop of
     Searching search ->
       let results = runStateT search (fuel,supply)
-          values  = map fst results
+          corrects = filter (\(_,(_,s')) -> correct s') results
+          values  = map fst corrects
       in Map.fromListWith (++) $ map (\x -> (eval x , [x])) values
+
+  where
+    correct ss = all (\s -> minq s == 0) ss
